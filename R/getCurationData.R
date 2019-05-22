@@ -93,7 +93,16 @@ curation = tibble::tribble(
   "8cc9b37f-2fa2-4527-ab3f-ec220d9468f3", "country", "CA", NA,
   "dba21dbc-ea38-4bbf-b50f-ba3d256e1f73", "country", "BJ", NA,
   "6ac09c4d-bf7b-4e47-9c2d-f5abf6e89aa0", "country", "BJ", NA,
-)
+  "848271aa-6a4f-4bae-a055-7081f3e70c4b", "country", "BE", NA,
+  "72aa797d-42a4-4176-9e19-5b3ddd551b79", "country", "BE", NA,
+  "e082b10e-476f-43c1-aa61-f8d92f33029a", "country", "BE", NA,
+  "1738f272-6b5d-4f43-9a92-453a8c5ea50a", "region", NA, "Northern Europe",
+  "1f3505cd-5d98-4e23-bd3b-ffe59d05d7c2", "country", "BE", NA,
+  "a51932dc-5d7c-484d-bd31-8acdcddd36cb", "country", "NO", NA,
+  "be6a0901-0116-4629-9211-c89710b993bb", "country", "BJ", NA,
+  "6e3e08f6-fde6-4946-ba09-257f9b2f1036", "country", "BJ", NA,
+  "d006d8bb-cf1e-46ff-a054-c6768e23d86d", "counry", "UA", NA,
+  )
 
 return(curation)
 }
