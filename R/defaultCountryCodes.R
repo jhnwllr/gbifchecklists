@@ -1,7 +1,9 @@
 
 
 
-defaultCountryCodes = function(D,default,publishing_org) {
+defaultCountryCodes = function(D=NULL,default,publishing_org) {
+
+  # if(is.null(D)) D = tibble(datasetkey="",iso2="")
 
   url="http://api.gbif.org/v1/dataset/search?type=CHECKLIST&publishing_org=" %+% publishing_org
 
@@ -11,7 +13,9 @@ defaultCountryCodes = function(D,default,publishing_org) {
     map_chr(~ .x$key)
 
   d = tibble(datasetkey,iso2=default)
-  D = rbind(D,d)
+  if(!is.null(D)) {
+    D = rbind(D,d)
+  } else {D = d}
 
   return(D)
 }

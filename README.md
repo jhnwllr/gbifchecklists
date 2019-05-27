@@ -16,6 +16,8 @@ devtools::install_github("jhnwllr/gbifchecklists")
 2. Run 
 
 ```
+# update only new tags  
+
 library(gbifMachineTagger)
 library(gbifchecklists)
 library(dplyr)
@@ -23,32 +25,31 @@ library(roperators)
 library(httr)
 library(purrr)
 
-namespace = "checklistCountryCode.jwaller.gbif.org"
 
-D = getCurationData() %>% # manually curated data 
-filter(!is.na(iso2)) %>% 
-select(datasetkey,iso2) 
+# Get all local manually curated dataset keys
+manuallyCuratedData = gbifchecklists::getCurationData() %>% # manually curated data 
+filter(!is.na(iso2)) %>% # remove those missing iso2 value
+select(datasetkey,iso2) %>% 
+rbind(gbifchecklists::getDefaultCountryCodesData()) %>% # and default publishers  
+gbifchecklists::addISSGChecklists() %>% # and ISSG publishers
+unique() 
 
-currentTags = getMachineTagData(namespace) %>% # get current machine tags
-select(datasetkey,iso2=value) 
+machineTaggedDatasekeys = gbifMachineTagger::getMachineTagData(namespace= "checklistCountryCode.jwaller.gbif.org") %>% # get current machine tags
+select(datasetkey,iso2=value) %>%
+pull(datasetkey)
 
-D = rbind(currentTags,D) %>% 
-gbifchecklists::defaultCountryCodes(default = "DK",publishing_org = "299958e0-4c06-11d8-b290-b8a03c50a862") %>% # add to data natinal publishers
-gbifchecklists::defaultCountryCodes(default = "DE",publishing_org = "0674aea0-a7e1-11d8-9534-b8a03c50a862") %>% 
-gbifchecklists::addISSGChecklists() %>%
-unique() # only add unique tags 
+dataToUpdate = manuallyCuratedData %>%
+filter(!datasetkey %in% !!machineTaggedDatasekeys) # get datasets that don't already have that same value
 
-# load("authentication.rda")
-authentication = list(user="",password="") # need to fill in order to use
+dataToUpdate # should not be too much probably 
 
-# api = "http://api.gbif.org/v1/dataset/"
-api = "http://api.gbif-uat.org/v1/dataset/"
+api = "http://api.gbif.org/v1/dataset/"
 
 namespace = "checklistCountryCode.jwaller.gbif.org"
 name = "checklistCountryCode"
 
-# deleteAllMachineTags(D,api,namespace,authentication)
-updateAllMachineTags(D,api,namespace,name,value="iso2",authentication)
+load("C:/Users/ftw712/Desktop/griddedDatasets/authentication.rda")
+updateAllMachineTags(D=dataToUpdate,api,namespace,name,value="iso2",authentication)
 
 ```
 
